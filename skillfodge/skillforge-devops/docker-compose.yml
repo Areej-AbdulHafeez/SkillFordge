@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+
+  api-gateway:
+    build: ./backend/api-gateway
+    ports:
+      - "4000:4000"
+    depends_on:
+      - auth-service
+      - profile-service
+      - ai-service
+
+  auth-service:
+    build: ./backend/auth-service
+    ports:
+      - "4001:4001"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/skillforge
+    depends_on:
+      - mongo
+
+  profile-service:
+    build: ./backend/core-service
+    ports:
+      - "4002:4002"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/skillforge
+    depends_on:
+      - mongo
+
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "4003:4003"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/skillforge
+
+  python-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.python-service
+    ports:
+      - "8000:8000"
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

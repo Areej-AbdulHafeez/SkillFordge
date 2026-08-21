@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: skillforge-config
+data:
+  MONGO_URI: "mongodb://mongo-svc:27017/skillforge"
+  NODE_ENV: "production"

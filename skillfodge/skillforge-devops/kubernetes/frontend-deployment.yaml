@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skillforge-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: skillforge-frontend
+  template:
+    metadata:
+      labels:
+        app: skillforge-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: skillforge/frontend:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skillforge-frontend-svc
+spec:
+  selector:
+    app: skillforge-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
